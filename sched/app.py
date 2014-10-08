@@ -32,6 +32,20 @@ def appointment_create():
     return render_template('appointment/edit.html',
         form=form)
 
+@app.route('/appointments/<int:appointment_id>/edit/',methods=['GET', 'POST'])
+def appointment_edit(appointment_id):
+    """Provide HTML form to edit a given appointment."""
+    appt = db.session.query(Appointment).get(appointment_id)
+    if appt is None:
+        abort(404)
+    form = AppointmentForm(request.form, appt)
+    if request.method == 'POST' and form.validate():
+        form.populate_obj(appt)
+        db.session.commit()
+        # Success. Send the user back to the detail view.
+        return redirect(url_for('appointment_detail',appointment_id=appt.id))
+    return render_template('appointment/edit.html',form=form)
+
 @app.route('/string/')
 def return_string():
         return 'Hello, world!'
@@ -55,21 +69,14 @@ def appointment_list():
 
 @app.route('/appointments/<int:appointment_id>/',endpoint='some_name')
 def appointment_detail(appointment_id):
-    edit_url = url_for('appointment_edit',appointment_id=appointment_id)
-    # Return the URL string just for demonstration.
-    return edit_url
-
-@app.route(
-    '/appointments/<int:appointment_id>/edit/',
-    methods=['GET', 'POST'])
-
-def appointment_edit(appointment_id):
-    return 'Form to edit appointment #.'.format(appointment_id)
-
-@app.route(
-    '/appointments/create/', methods=['GET', 'POST'])
-def appointment_create():
-    return 'Form to create a new appointment.'
+    """Provide HTML page with a given appointment."""
+    # Query: get Appointment object by ID.
+    appt = db.session.query(Appointment).get(appointment_id)
+    if appt is None:
+        # Abort with Not Found.
+        abort(404)
+    return render_template('appointment/detail.html',
+        appt=appt)
 
 @app.route(
     '/appointments/<int:appointment_id>/delete/',methods=['DELETE'])
