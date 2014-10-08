@@ -77,7 +77,7 @@ def appointment_list():
     return render_template('appointment/index.html',
         appts=appts)
 
-@app.route('/appointments/<int:appointment_id>/',endpoint='some_name')
+@app.route('/appointments/<int:appointment_id>/')
 def appointment_detail(appointment_id):
     """Provide HTML page with a given appointment."""
     # Query: get Appointment object by ID.
