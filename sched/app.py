@@ -1,3 +1,4 @@
+import doctest
 from flask import Flask
 from flask import url_for
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -58,4 +59,5 @@ def appointment_delete(appointment_id):
     raise NotImplementedError('DELETE')
 
 if __name__ == "__main__":
-    app.run()
+    doctest.testmod()
+    app.run('0.0.0.0', 5000)
