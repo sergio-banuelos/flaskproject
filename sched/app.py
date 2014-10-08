@@ -3,7 +3,9 @@ from flask import Flask
 from flask import url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from sched.models import Base
-
+from flask import abort, jsonify, redirect, render_template
+from sched.forms import AppointmentForm
+from sched.models import Appointment
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
@@ -13,6 +15,22 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
 # SQLAlchemy declarative Base class.
 db = SQLAlchemy(app)
 db.Model = Base
+
+# ... skipping ahead. Keep previous code from app.py here.
+@app.route('/appointments/create/', methods=['GET', 'POST'])
+def appointment_create():
+    """Provide HTML form to create a new appointment."""
+    form = AppointmentForm(request.form)
+    if request.method == 'POST' and form.validate():
+        appt = Appointment()
+        form.populate_obj(appt)
+        db.session.add(appt)
+        db.session.commit()
+        # Success. Send user back to full appointment list.
+        return redirect(url_for('appointment_list'))
+    # Either first load or validation error at this point.
+    return render_template('appointment/edit.html',
+        form=form)
 
 @app.route('/string/')
 def return_string():
