@@ -9,11 +9,8 @@
             <legend>{{ title }}</legend>
             {{ edit_field(form.title, maxlength=255, class="span3",
             placeholder="Important Meeting") }}
-            {{ edit_field(form.start, class="span3",
-            type="datetime",
-            placeholder="yyyy-mm-dd hh:mm:ss") }}
-            {{ edit_field(form.end, class="span3", type="datetime",
-            ￼      placeholder="yyyy-mm-dd hh:mm:ss") }}
+            {{ edit_field(form.start, class="span3", type="datetime", placeholder="yyyy-mm-dd hh:mm:ss") }}
+            {{ edit_field(form.end, class="span3", type="datetime", placeholder="yyyy-mm-dd hh:mm:ss") }}
             {{ edit_field(form.allday) }}
             {{ edit_field(form.location, maxlength=255,
             class="span3",

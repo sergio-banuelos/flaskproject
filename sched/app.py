@@ -1,11 +1,14 @@
 import doctest
-from flask import Flask
-from flask import url_for
+
+#from flask import Flask
+#from flask import url_for
+from flask import *
 from flask.ext.sqlalchemy import SQLAlchemy
 from sched.models import Base
 from flask import abort, jsonify, redirect, render_template
 from sched.forms import AppointmentForm
 from sched.models import Appointment
+from sched import filters
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
@@ -15,6 +18,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
 # SQLAlchemy declarative Base class.
 db = SQLAlchemy(app)
 db.Model = Base
+filters.init_app(app)
+
 
 # ... skipping ahead. Keep previous code from app.py here.
 @app.route('/appointments/create/', methods=['GET', 'POST'])
@@ -82,6 +87,12 @@ def appointment_detail(appointment_id):
     '/appointments/<int:appointment_id>/delete/',methods=['DELETE'])
 def appointment_delete(appointment_id):
     raise NotImplementedError('DELETE')
+
+@app.errorhandler(404)
+def scheduling_exception_handler(error):
+    return render_template('error/not_found.html'), 404
+
+
 
 if __name__ == "__main__":
     doctest.testmod()

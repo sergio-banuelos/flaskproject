@@ -16,12 +16,3 @@ if __name__ == "__main__":
     print('Here is how a form field displays:')
     print(form.title.label)
     print(form.title)
-
-    from werkzeug.datastructures import \
-    ImmutableMultiDict as multidict
-    data = multidict([('title', 'Hello, form!')])
-    form = AppointmentForm(data)
-    print('Here is validation...')
-    print('Does it validate: {}'.format(form.validate()))
-    print('There is an error attached to the field...')
-    print('form.start.errors: {}'.format(form.start.errors))
