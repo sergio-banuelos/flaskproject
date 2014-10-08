@@ -7,11 +7,17 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from sched.models import Base
 from flask import abort, jsonify, redirect, render_template
 from sched.forms import AppointmentForm
+from sched.forms import LoginForm
 from sched.models import Appointment
 from sched import filters
+from flask.ext.login import LoginManager, current_user
+from flask.ext.login import login_user, logout_user, login_required
+from sched.models import User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
+app.secret_key = 'secret_key'
+
 # Use Flask-SQLAlchemy for its engine and session
 # configuration. Load the extension, giving it the app object,
 # and override its default Model class with the pure
@@ -19,10 +25,42 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sched.db'
 db = SQLAlchemy(app)
 db.Model = Base
 filters.init_app(app)
+login_manager = LoginManager()
+login_manager.setup_app(app)
+login_manager.login_view = 'login'
 
+@login_manager.user_loader
+def load_user(user_id):
+    """Flask-Login hook to load a User instance from ID."""
+    return db.session.query(User).get(user_id)
+
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated():
+        return redirect(url_for('appointment_list'))
+    form = LoginForm(request.form)
+    error = None
+    if request.method == 'POST' and form.validate():
+        email = form.username.data.lower().strip()
+        password = form.password.data.lower().strip()
+        user, authenticated = User.authenticate(db.session.query, email,password)
+        if authenticated:
+            login_user(user)
+            return redirect(url_for('appointment_list'))
+        else:
+            error = 'Incorrect username or password.'
+    return render_template('user/login.html',
+        form=form, error=error)
+
+@app.route('/logout/')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 # ... skipping ahead. Keep previous code from app.py here.
 @app.route('/appointments/create/', methods=['GET', 'POST'])
+@login_required
 def appointment_create():
     """Provide HTML form to create a new appointment."""
     form = AppointmentForm(request.form)
@@ -38,6 +76,7 @@ def appointment_create():
         form=form)
 
 @app.route('/appointments/<int:appointment_id>/edit/',methods=['GET', 'POST'])
+@login_required
 def appointment_edit(appointment_id):
     """Provide HTML form to edit a given appointment."""
     appt = db.session.query(Appointment).get(appointment_id)
@@ -69,6 +108,7 @@ def return_tuple():
     return 'Hello, world!', 200, {'Content-Type':'text/plain'}
 
 @app.route('/appointments/')
+@login_required
 def appointment_list():
     """Provide HTML listing of all appointments."""
     # Query: Get all Appointment objects, sorted by date.
@@ -78,6 +118,7 @@ def appointment_list():
         appts=appts)
 
 @app.route('/appointments/<int:appointment_id>/')
+@login_required
 def appointment_detail(appointment_id):
     """Provide HTML page with a given appointment."""
     # Query: get Appointment object by ID.
@@ -89,6 +130,7 @@ def appointment_detail(appointment_id):
         appt=appt)
 
 @app.route('/appointments/<int:appointment_id>/delete/',methods=['DELETE'])
+@login_required
 def appointment_delete(appointment_id):
     """Delete record using HTTP DELETE, respond with JSON."""
     appt = db.session.query(Appointment).get(appointment_id)

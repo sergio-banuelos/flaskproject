@@ -1,5 +1,5 @@
 from wtforms import Form, BooleanField, DateTimeField
-from wtforms import TextAreaField, TextField
+from wtforms import TextAreaField, TextField, PasswordField
 from wtforms.validators import Length, required
 
 class AppointmentForm(Form):
@@ -9,6 +9,10 @@ class AppointmentForm(Form):
     allday = BooleanField('All Day')
     location = TextField('Location', [Length(max=255)])
     description = TextAreaField('Description')
+
+class LoginForm(Form):
+    username = TextField('Email', [required()])
+    password = PasswordField('Password', [required()])
 
 if __name__ == "__main__":
     # Demonstration of a WTForms form by itself.
