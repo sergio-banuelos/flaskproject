@@ -81,6 +81,5 @@ class AppTest(unittest.TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEqual(json.loads(response.data), {'status': 'OK'})
 
-
 if __name__ == '__main__':
     unittest.main()
