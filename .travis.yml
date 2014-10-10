@@ -17,3 +17,4 @@ script:
   - coverage run --omit="/Library*" unittestApp.py
   - coverage run --omit="/Library*" unittestModels.py
   - python manage.py runserver
+ 
