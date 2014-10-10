@@ -3,4 +3,5 @@ Flask-Login
 Flask-Script
 Flask-SQLAlchemy
 flake8
+coverage
 WTForms
