@@ -35,14 +35,6 @@ def when_i_fill_in_field_with_id_group1_with_group2(step, field_id, value):
         text_field.send_keys(value)
 
 
-@step('I fill in field with id "([^"]*)" with "([^"]*)"')
-def and_i_fill_in_field_with_id_group1_with_group2(step, field_id, value):
-    with AssertContextManager(step):
-        text_field = world.browser.find_element_by_id(field_id)
-        text_field.clear()
-        text_field.send_keys(value)
-
-
 @step('I submit the form')
 def and_i_submit_the_form(step):
     with AssertContextManager(step):
@@ -64,13 +56,6 @@ def element_contains(step, element_class, value):
         assert (value in element.text), "Got %s, %s " % (element.text, value)
 
 
-@step('I see that the title of the page contains "([^"]*)"')
-def then_i_see_the_title(step, title):
-    with AssertContextManager(step):
-        element = world.browser.find_element_by_tag_name('h2')
-        assert title == element.text, "Got %s " % element.text
-
-
 @step('I update the field with id "([^"]*)" with "([^"]*)"')
 def when_i_update(step, field_id, value):
     with AssertContextManager(step):
@@ -80,28 +65,6 @@ def when_i_update(step, field_id, value):
 
 fechaActual = datetime.now().strftime("%Y-%m-%d %l:%M:%S")
 fechaActualComparacion = datetime.now().strftime("%Y-%m-%d")
-
-
-@step('I update the field with id "([^"]*)" with actual date')
-def when_i_update_with_actual_date(step, field_id):
-    with AssertContextManager(step):
-        text_field = world.browser.find_element_by_id(field_id)
-        text_field.clear()
-        text_field.send_keys(fechaActual)
-
-
-@step('I see that the element with class "([^"]*)" contains the actual date')
-def then_the_element_with_actual_date(step, element_class):
-    with AssertContextManager(step):
-        element = world.browser.find_element_by_class_name(element_class)
-        assert fechaActualComparacion in element.text, "Got %s " % element.text
-
-
-@step('I see at least "([^"]*)" appoitments with the class "([^"]*)"')
-def then_i_see_two_appoitments(step, num, element_class):
-    with AssertContextManager(step):
-        elements = world.browser.find_elements_by_class_name(element_class)
-        assert len(elements) > int(num)
 
 
 @step('I select the appointment with the title "([^"]*)"')

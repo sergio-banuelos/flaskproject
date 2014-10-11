@@ -15,13 +15,6 @@ Scenario: Create an appoitment
   And I fill in field with id "description" with "Llegar temprano para que no se enoje el dentista"
   And I submit the form
 
-Scenario: Consult an appoitment
-  Given I go to "http://127.0.0.1:5000/appointments/2/"
-  Then I see that the element with class "appointment-detail" contains "My Appointment"
-
-Scenario: Consult an appoitment that does not exist
-  Given I go to "http://127.0.0.1:5000/appointments/0/"
-  Then I see that the title of the page contains "Not Found"
 
 Scenario: Edit a given appointment
   Given I go to "http://127.0.0.1:5000/appointments/1/edit"
@@ -29,25 +22,10 @@ Scenario: Edit a given appointment
   And I submit the form
   Then I see that the element with class "appointment-detail" contains "Titulo Nuevo"
 
-Scenario: Edit a date given appointment
-  Given I go to "http://127.0.0.1:5000/appointments/1/edit"
-  When I update the field with id "start" with actual date
-  And I submit the form
-  Then I see that the element with class "appointment-detail" contains the actual date
-
-Scenario: Edit a date given appointment
-  Given I go to "http://127.0.0.1:5000/appointments/1/edit"
-  When I update the field with id "start" with actual date
-  And I submit the form
-  Then I see that the element with class "appointment-detail" contains the actual date
-
-Scenario: List all appoitments    
-  Given I go to "http://127.0.0.1:5000/appointments/"
-  Then I see at least "2" appoitments with the class "appointment-detail"
 
 Scenario: Delete an appoitment  
   Given I go to "http://127.0.0.1:5000/appointments/"
-  When I select the appointment with the title "Cita con el dentista"
+  When I select the appointment with the title "Borrar cita"
   And I do click in the button "appointment-delete-link"    
   And I go to "http://127.0.0.1:5000/appointments/"  
-  Then I see that the element with the class "appointment-detail" not contains "Cita con el dentista"
+  Then I see that the element with the class "appointment-detail" not contains "Borrar cita"
