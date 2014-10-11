@@ -151,4 +151,4 @@ def scheduling_exception_handler(error):
 
 if __name__ == "__main__":
     doctest.testmod()
-    app.run('0.0.0.0', 5000)
+    app.run(debug=True)
