@@ -1,5 +1,6 @@
 """Custom filters for Jinja templating. Load with init_app function."""
-
+import doctest
+from datetime import datetime
 from jinja2 import Markup, evalcontextfilter, escape
 
 
@@ -15,7 +16,23 @@ def init_app(app):
 
 
 def do_datetime(dt, format=None):
-    """Jinja template filter to format a datetime object with date & time."""
+    """Jinja template filter to format a datetime object with date & time. 
+    >>> do_datetime(None)
+    ''
+
+    >>> do_datetime(datetime(2012, 10, 17, 22, 00, 00))
+    '2012-10-17 - Wednesday at 10:00pm'
+
+    >>> do_datetime(None, datetime(2012, 10, 17, 22, 00, 00))
+    ''
+
+    >>> do_datetime(None, None)
+    ''
+
+    >>> do_datetime(datetime(2012, 10, 17, 22, 00, 00), None)
+    '2012-10-17 - Wednesday at 10:00pm'
+
+    """
     if dt is None:
         # By default, render an empty string.
         return ''
@@ -34,7 +51,19 @@ def do_datetime(dt, format=None):
 
 
 def do_date(dt, format='%Y-%m-%d - %A'):
-    """Jinja template filter to format a datetime object with date only."""
+    """Jinja template filter to format a datetime object with date only.
+    >>> do_date(None)
+    ''
+    >>> do_date(datetime(2012, 10, 17, 22, 00, 00))
+    '2012-10-17 - Wednesday'
+
+    >>> do_date(None, None)
+    ''
+
+    >>> do_date(None, datetime(2012, 10, 17, 22, 00, 00))
+    ''
+
+    """
     if dt is None:
         return ''
     # Only difference with do_datetime is the default format, but that is
@@ -47,33 +76,83 @@ def do_duration(seconds):
         
         3600 becomes "1 hour".
         258732 becomes "2 days, 23 hours, 52 minutes, 12 seconds".
-        """
+    >>> do_duration(3600)
+    '1 hour'
+
+    >>> do_duration(258732)
+    '2 days, 23 hours, 52 minutes, 12 seconds'
+
+    >>> do_duration(60)
+    '1 minute'
+        
+    """
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     d, h = divmod(h, 24)
     tokens = []
-    tokens.append(formatoDia(d))
-    tokens.append(formatoHora(h))
-    tokens.append(formatoMinuto(m))
-    tokens.append(formatoSegundo(s))
+    if d != 0:
+        tokens.append(formatoDia(d))
+    if h != 0:
+        tokens.append(formatoHora(h))
+    if m != 0:    
+        tokens.append(formatoMinuto(m))
+    if s != 0:
+        tokens.append(formatoSegundo(s))
     
     template = ', '.join(tokens)
     return template.format(d=d, h=h, m=m, s=s)
 
 
 def formatoDia(d):
+    """
+    formato para los dias 
+    >>> formatoDia(1)
+    '{d} day'
+
+    >>> formatoDia(10)
+    '{d} days'
+   
+    """
     return '{d} days' if d > 1 else '{d} day'
 
 
 def formatoHora(h):
+    """
+    format for hours
+
+    >>> formatoHora(1)
+    '{h} hour'
+
+    >>> formatoHora(10)
+    '{h} hours'
+    """
     return '{h} hours' if h > 1 else '{h} hour'
 
 
 def formatoMinuto(m):
+    """
+    formato para los minutos
+
+    >>> formatoMinuto(1)
+    '{m} minute'
+
+    >>> formatoMinuto(10)
+    '{m} minutes'
+    """
     return '{m} minutes' if m > 1 else '{m} minute'
 
 
 def formatoSegundo(s):
+    """
+    formato para los segundos 
+
+    >>> formatoSegundo(1)
+    '{s} second'
+
+    >>> formatoSegundo(10)
+    '{s} seconds'
+    """
+
     return '{s} seconds' if s > 1 else '{s} second'
 
 
