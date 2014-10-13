@@ -83,4 +83,3 @@ def then_the_element_with_the_class_not_contains(step, element_class, title):
             lst.append(e.text)
 
         assert title not in lst
-
