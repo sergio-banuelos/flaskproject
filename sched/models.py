@@ -12,6 +12,7 @@ Base = declarative_base()
 
 
 class User(Base):
+
     """A user login, with credentials and authentication."""
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
@@ -43,7 +44,7 @@ class User(Base):
     @classmethod
     def authenticate(cls, query, email, password):
         email = email.strip().lower()
-        user = query(cls).filter(cls.email==email).first()
+        user = query(cls).filter(cls.email == email).first()
         if user is None:
             return None, False
         if not user.active:
@@ -62,13 +63,15 @@ class User(Base):
     def is_authenticated(self):
         return True
 
+
 class Appointment(Base):
+
     """An appointment on the calendar."""
     __tablename__ = 'appointment'
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, default=datetime.now)
     modified = Column(DateTime, default=datetime.now,
-        onupdate=datetime.now)
+                      onupdate=datetime.now)
     title = Column(String(255))
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
