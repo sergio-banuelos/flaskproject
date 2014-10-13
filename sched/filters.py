@@ -9,7 +9,7 @@ def init_app(app):
     app.jinja_env.filters['date'] = do_date
     app.jinja_env.filters['datetime'] = do_datetime
     app.jinja_env.filters['duration'] = do_duration
-    
+
     # The nl2br filter uses the Jinja environment's context to determine
     # whether to autoescape
     app.jinja_env.filters['nl2br'] = evalcontextfilter(do_nl2br)
@@ -73,7 +73,7 @@ def do_date(dt, format='%Y-%m-%d - %A'):
 
 def do_duration(seconds):
     """Jinja template filter to format seconds to humanized duration.
-        
+
         3600 becomes "1 hour".
         258732 becomes "2 days, 23 hours, 52 minutes, 12 seconds".
     >>> do_duration(3600)
@@ -84,7 +84,7 @@ def do_duration(seconds):
 
     >>> do_duration(60)
     '1 minute'
-        
+
     """
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
@@ -94,11 +94,11 @@ def do_duration(seconds):
         tokens.append(formatoDia(d))
     if h != 0:
         tokens.append(formatoHora(h))
-    if m != 0:    
+    if m != 0:
         tokens.append(formatoMinuto(m))
     if s != 0:
         tokens.append(formatoSegundo(s))
-    
+
     template = ', '.join(tokens)
     return template.format(d=d, h=h, m=m, s=s)
 
@@ -111,7 +111,7 @@ def formatoDia(d):
 
     >>> formatoDia(10)
     '{d} days'
-   
+
     """
     return '{d} days' if d > 1 else '{d} day'
 
@@ -158,11 +158,11 @@ def formatoSegundo(s):
 
 def do_nl2br(context, value):
     """Render newline \n characters as HTML line breaks <br />.
-        
+
         By default, HTML normalizes all whitespace on display. This filter allows
         text with line breaks entered into a textarea input to later display in
         HTML with line breaks.
-        
+
         The context argument is Jinja's state for template rendering, which
         includes configuration. This filter inspects the context to determine
         whether to auto-escape content, e.g. convert <script> to &lt;script&gt;.
