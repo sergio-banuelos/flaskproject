@@ -1,6 +1,5 @@
 """Custom filters for Jinja templating. Load with init_app function."""
-import doctest
-from datetime import datetime
+
 from jinja2 import Markup, evalcontextfilter, escape
 
 
@@ -16,7 +15,8 @@ def init_app(app):
 
 
 def do_datetime(dt, format=None):
-    """Jinja template filter to format a datetime object with date & time. 
+    """
+    Jinja template filter to format a datetime object with date & time.
     >>> do_datetime(None)
     ''
 
@@ -31,7 +31,6 @@ def do_datetime(dt, format=None):
 
     >>> do_datetime(datetime(2012, 10, 17, 22, 00, 00), None)
     '2012-10-17 - Wednesday at 10:00pm'
-
     """
     if dt is None:
         # By default, render an empty string.
@@ -105,13 +104,11 @@ def do_duration(seconds):
 
 def formatoDia(d):
     """
-    formato para los dias 
+    Format para los dias
     >>> formatoDia(1)
     '{d} day'
-
-    >>> formatoDia(10)
+    >>> formatoDia(2)
     '{d} days'
-
     """
     return '{d} days' if d > 1 else '{d} day'
 
@@ -144,12 +141,10 @@ def formatoMinuto(m):
 
 def formatoSegundo(s):
     """
-    formato para los segundos 
-
+    Format for seconds
     >>> formatoSegundo(1)
     '{s} second'
-
-    >>> formatoSegundo(10)
+    >>> formatoSegundo(23)
     '{s} seconds'
     """
 
@@ -157,16 +152,17 @@ def formatoSegundo(s):
 
 
 def do_nl2br(context, value):
-    """Render newline \n characters as HTML line breaks <br />.
+    """
+    Render newline \n characters as HTML line breaks <br />.
 
-        By default, HTML normalizes all whitespace on display. This filter allows
-        text with line breaks entered into a textarea input to later display in
-        HTML with line breaks.
+    By default, HTML normalizes all whitespace on display. This filter allows
+    text with line breaks entered into a textarea input to later display in
+    HTML with line breaks.
 
-        The context argument is Jinja's state for template rendering, which
-        includes configuration. This filter inspects the context to determine
-        whether to auto-escape content, e.g. convert <script> to &lt;script&gt;.
-        """
+    The context argument is Jinja's state for template rendering, which
+    includes configuration. This filter inspects the context to determine
+    whether to auto-escape content, e.g. convert <script> to &lt;script&gt;.
+    """
     formatted = u'<br />'.join(escape(value).split('\n'))
     if context.autoescape:
         formatted = Markup(formatted)
