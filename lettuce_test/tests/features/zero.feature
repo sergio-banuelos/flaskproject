@@ -1,4 +1,3 @@
-
 Feature:
     Administrar_Citas
 
