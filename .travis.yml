@@ -10,8 +10,8 @@ before_install:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 
-#before_script: 
-#- "flake8 --max-complexity=5 manage.py sched/"
+before_script: 
+- "flake8 --max-complexity=5 manage.py sched/"
 # command to run tests
 
 script: 
